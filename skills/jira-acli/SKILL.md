@@ -25,6 +25,7 @@ Use the local wrapper commands instead of calling `acli` freehand. They are wire
 - Requests for raw Jira CLI actions should go through `~/bin/acli-codex`.
 - Requests to create a ticket in a sprint should treat the sprint name as a sprint target first, not as ticket title context, a parent issue, or an Epic.
 - Requests to move a ticket into a sprint should use board lookup, sprint lookup, and the Agile REST sprint-membership endpoint.
+- Requests like `add 45m to SOT-832`, `log 1h on SOT-832`, or `update SOT-832 with 45min` should use Jira REST worklog creation as the default path.
 
 ## Output guidance
 
@@ -60,6 +61,24 @@ When creating and assigning in one pass, prefer this order:
 
 Immediate verification should prefer the issue field view over sprint listing output, because sprint listing can lag.
 
+## Worklog workflow
+
+Use this flow when the user asks to log time, add time, or update a ticket with a duration.
+
+1. Confirm the issue key with `~/bin/jira-ticket ISSUE_KEY` if needed.
+2. If needed, check `~/bin/acli-codex jira workitem --help` once to confirm no direct worklog create command exists.
+3. Create the worklog with Jira REST:
+   `https://$ATLASSIAN_JIRA_SITE/rest/api/3/issue/ISSUE_KEY/worklog`
+4. Expect `201` and inspect the created worklog response.
+5. Verify the issue totals with `~/bin/acli-codex jira workitem view ISSUE_KEY --fields '*all' --json`.
+
+When the user gives a prompt like `update SOT-832 with 45min`, prefer this order:
+
+1. Resolve or confirm the issue key.
+2. POST the worklog with `timeSpent`.
+3. Verify the response body includes `id`, `timeSpent`, and `timeSpentSeconds`.
+4. Verify the issue fields show updated `timespent`, `timetracking.timeSpent`, and `worklog.worklogs`.
+
 ## Guardrails
 
 - Do not print or echo secrets from `~/.zsh_private`.
@@ -73,6 +92,8 @@ Immediate verification should prefer the issue field view over sprint listing ou
 - Do not use `--query` with `jira board search`; use `--project` or `--name`.
 - Do not expect `jira sprint update` to change sprint membership.
 - Do not expect `jira workitem edit` to expose sprint assignment as a direct flag.
+- Do not guess that ACLI supports worklog creation if `jira workitem --help` does not show it.
+- Do not spend time on general ACLI discovery once worklog creation is absent; switch to Jira REST immediately.
 - Do not omit `https://` when building Jira REST URLs from `ATLASSIAN_JIRA_SITE`.
 - Do not rely on sprint list output alone for immediate post-move verification.
 
@@ -91,12 +112,28 @@ Immediate verification should prefer the issue field view over sprint listing ou
 - Known sprint field on this Jira instance:
   `customfield_10020`
 
+## Worklog notes
+
+- Worklog create endpoint:
+  `https://$ATLASSIAN_JIRA_SITE/rest/api/3/issue/ISSUE_KEY/worklog`
+- Worklog payload examples:
+  `{"timeSpent":"45m"}`
+  `{"timeSpent":"1h"}`
+  `{"timeSpent":"2h 30m"}`
+- Success code for worklog creation:
+  `201`
+- Immediate response fields to check:
+  `id`, `timeSpent`, `timeSpentSeconds`, `started`
+- Issue fields to verify after logging time:
+  `timespent`, `timetracking.timeSpent`, `worklog.worklogs`
+
 ## Useful raw commands
 
 - `~/bin/acli-codex jira auth status`
 - `~/bin/jira-auth-refresh`
 - `~/bin/acli-codex jira workitem view KEY-123 --json`
 - `~/bin/acli-codex jira workitem search --jql 'assignee = currentUser() AND resolution = Unresolved ORDER BY updated DESC' --limit 20`
+- `~/bin/acli-codex jira workitem --help`
 - `~/bin/acli-codex jira board search --project SOT --json`
 - `~/bin/acli-codex jira board list-sprints --id BOARD_ID --paginate --json`
 - `~/bin/acli-codex jira workitem view ISSUE_KEY --fields '*all' --json`

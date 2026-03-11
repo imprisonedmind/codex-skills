@@ -78,6 +78,48 @@ Verify immediately on the issue itself:
 
 On this Jira instance, sprint membership appears in `customfield_10020`.
 
+## Worklog workflow
+
+When a ticket needs time logged against it, the reliable path is Jira REST rather than ACLI:
+
+1. Confirm the issue key with `~/bin/jira-ticket ISSUE_KEY` if needed.
+2. If needed, confirm ACLI does not expose direct worklog creation with `~/bin/acli-codex jira workitem --help`.
+3. Create the worklog through Jira REST:
+
+```sh
+source ~/.zsh_private >/dev/null 2>&1
+curl -sS \
+  -u "$ATLASSIAN_JIRA_EMAIL:$ATLASSIAN_API_TOKEN" \
+  -H 'Content-Type: application/json' \
+  -X POST \
+  "https://$ATLASSIAN_JIRA_SITE/rest/api/3/issue/ISSUE_KEY/worklog" \
+  -d '{"timeSpent":"45m"}' \
+  -o /tmp/ISSUE_KEY-worklog.json \
+  -w '%{http_code}'
+```
+
+Expected success status:
+
+- `201`
+
+Verify the created worklog response:
+
+```sh
+cat /tmp/ISSUE_KEY-worklog.json
+```
+
+Then verify updated issue totals:
+
+```sh
+~/bin/acli-codex jira workitem view ISSUE_KEY --fields '*all' --json
+```
+
+Check:
+
+- `timespent`
+- `timetracking.timeSpent`
+- `worklog.worklogs`
+
 ## Notes
 
 - Do not commit Atlassian credentials.
@@ -85,3 +127,4 @@ On this Jira instance, sprint membership appears in `customfield_10020`.
 - Do not omit `https://` when constructing REST URLs from `ATLASSIAN_JIRA_SITE`.
 - Do not use `--query` with `jira board search`; use `--project` or `--name`.
 - Treat free-form phrases like `Simple Mon UAT feedback` as possible sprint names when the user is discussing placement or planning.
+- For time logging in this environment, prefer Jira REST as the default creation path.
