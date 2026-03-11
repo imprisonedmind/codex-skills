@@ -1,0 +1,9 @@
+#!/bin/zsh
+set -euo pipefail
+
+echo "today:"
+"${HOME}/bin/wakatime-codex" --today
+
+echo
+echo "offline_heartbeats:"
+"${HOME}/bin/wakatime-codex" --offline-count
