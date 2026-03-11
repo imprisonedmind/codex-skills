@@ -9,6 +9,25 @@ Custom Codex skills and local helper wrappers.
   - `SKILL.md`
   - `README.md`
   - `bin/` wrappers
+- `packages/` contains the Bun/TypeScript rewrite workspace.
+- `scripts/` contains repo-level utility scripts such as symlink installation.
+
+## Bun workspace
+
+The TypeScript rewrite is being built as a Bun workspace.
+
+Setup:
+
+```bash
+bun install
+```
+
+Useful commands:
+
+```bash
+bun run typecheck
+bun run install:links
+```
 
 ## Symlink setup
 
@@ -45,6 +64,36 @@ Make sure `~/bin` is on your `PATH`.
 - `~/.codex/skills/wakatime-cli` -> `skills/wakatime-cli`
 - `~/bin/jira-*` -> `skills/jira-acli/bin/*`
 - `~/bin/wakatime-*` -> `skills/wakatime-cli/bin/*`
+
+## Combined example
+
+Example prompt:
+
+```text
+$jira-acli what tickets have I worked on today?
+and can you match those tickets with time using $wakatime-cli
+```
+
+Example response:
+
+```text
+For today, March 11, 2026, Jira shows two tickets you worked on:
+
+- SOT-829 — Add settings toggle to disable map
+- SOT-820 — Event comments
+
+Matched against WakaTime branch time in soteria-django for March 11, 2026:
+
+- SOT-829 -> branch sot-829-browser-map-toggle -> 1 hr 4 mins
+- SOT-820 -> branch SOT-820-event-comments -> 1 min
+
+There was also 54 mins on branch main in soteria-django today, which does not
+map cleanly to a Jira key.
+```
+
+This is the main intended workflow for these skills: use Jira to identify the
+relevant tickets, use WakaTime to match branch time, then feed that combined
+context back into Codex for Jira updates.
 
 ## Notes
 
