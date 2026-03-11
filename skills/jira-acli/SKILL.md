@@ -23,6 +23,8 @@ Use the local wrapper commands instead of calling `acli` freehand. They are wire
 - Requests like `fetch SOT-820`, `find ticket SOT-820`, `show SOT-820`, or `inspect SOT-820` should use `~/bin/jira-ticket SOT-820`.
 - Requests for JQL or lists of tickets should use `~/bin/jira-search 'project = TEAM ORDER BY updated DESC'`.
 - Requests for raw Jira CLI actions should go through `~/bin/acli-codex`.
+- Requests to create a ticket in a sprint should treat the sprint name as a sprint target first, not as ticket title context, a parent issue, or an Epic.
+- Requests to move a ticket into a sprint should use board lookup, sprint lookup, and the Agile REST sprint-membership endpoint.
 
 ## Output guidance
 
@@ -37,6 +39,27 @@ Use the local wrapper commands instead of calling `acli` freehand. They are wire
 3. If you need a raw Atlassian CLI command, run it through `~/bin/acli-codex`.
 4. If the wrapper reports unauthorized or `authentication failed`, stop and run `~/bin/jira-auth-refresh`, then retry the original command.
 
+## Sprint workflow
+
+Use this flow when the user asks to create a ticket in sprint `X`, move a ticket into sprint `X`, or when a free-form phrase may be a sprint name.
+
+1. Create the issue first with `~/bin/acli-codex jira workitem create ... --json`.
+2. Resolve the board with `~/bin/acli-codex jira board search --project PROJECT_KEY --json`.
+3. Resolve the sprint with `~/bin/acli-codex jira board list-sprints --id BOARD_ID --paginate --json`.
+4. Add the issue to the sprint with Jira Agile REST:
+   `https://$ATLASSIAN_JIRA_SITE/rest/agile/1.0/sprint/SPRINT_ID/issue`
+5. Verify on the issue itself with `~/bin/acli-codex jira workitem view ISSUE_KEY --fields '*all' --json`.
+
+When creating and assigning in one pass, prefer this order:
+
+1. Create the issue.
+2. Resolve the board id for the project.
+3. Resolve the sprint id by sprint name on that board.
+4. POST the issue key into the sprint via Agile REST.
+5. Verify sprint membership on the issue fields.
+
+Immediate verification should prefer the issue field view over sprint listing output, because sprint listing can lag.
+
 ## Guardrails
 
 - Do not print or echo secrets from `~/.zsh_private`.
@@ -46,6 +69,27 @@ Use the local wrapper commands instead of calling `acli` freehand. They are wire
 - If `jira-login` fails or auth status is unauthorized, instruct the user to run `~/bin/jira-auth-refresh` and then retry.
 - If the same Jira login works in the user's normal terminal but fails from Codex, treat it as an execution-environment limitation first, especially sandboxed network restrictions.
 - Do not claim the API token is invalid unless the user confirms the same command fails outside Codex too.
+- Do not assume a phrase like `Simple Mon UAT feedback` is a title, parent, or Epic. It may be a sprint name.
+- Do not use `--query` with `jira board search`; use `--project` or `--name`.
+- Do not expect `jira sprint update` to change sprint membership.
+- Do not expect `jira workitem edit` to expose sprint assignment as a direct flag.
+- Do not omit `https://` when building Jira REST URLs from `ATLASSIAN_JIRA_SITE`.
+- Do not rely on sprint list output alone for immediate post-move verification.
+
+## Sprint membership notes
+
+- Board lookup:
+  `~/bin/acli-codex jira board search --project SOT --json`
+- Sprint lookup:
+  `~/bin/acli-codex jira board list-sprints --id BOARD_ID --paginate --json`
+- Membership update:
+  `curl -sS -u "$ATLASSIAN_JIRA_EMAIL:$ATLASSIAN_API_TOKEN" -H 'Content-Type: application/json' -X POST "https://$ATLASSIAN_JIRA_SITE/rest/agile/1.0/sprint/SPRINT_ID/issue" -d '{"issues":["ISSUE_KEY"]}'`
+- Success code for sprint membership update:
+  `204`
+- Immediate verification:
+  `~/bin/acli-codex jira workitem view ISSUE_KEY --fields '*all' --json`
+- Known sprint field on this Jira instance:
+  `customfield_10020`
 
 ## Useful raw commands
 
@@ -53,3 +97,6 @@ Use the local wrapper commands instead of calling `acli` freehand. They are wire
 - `~/bin/jira-auth-refresh`
 - `~/bin/acli-codex jira workitem view KEY-123 --json`
 - `~/bin/acli-codex jira workitem search --jql 'assignee = currentUser() AND resolution = Unresolved ORDER BY updated DESC' --limit 20`
+- `~/bin/acli-codex jira board search --project SOT --json`
+- `~/bin/acli-codex jira board list-sprints --id BOARD_ID --paginate --json`
+- `~/bin/acli-codex jira workitem view ISSUE_KEY --fields '*all' --json`
