@@ -1,0 +1,17 @@
+{
+  "name": "codex-skills",
+  "private": true,
+  "type": "module",
+  "packageManager": "bun@1.3.11",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "typecheck": "tsc -b",
+    "install:links": "bun run scripts/install-symlinks.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.3.1",
+    "typescript": "^5.9.2"
+  }
+}

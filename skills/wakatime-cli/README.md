@@ -41,6 +41,13 @@ If needed, you can override inference for ticket lookups with:
 - `--project <wakatime-project>`
 - `--search-root <dir>`
 
+Environment overrides:
+
+- `WAKATIME_CONFIG`
+  Override the WakaTime config file path.
+- `CODEX_SKILLS_WORKSPACES_ROOT`
+  Override the default workspace root used for local repo discovery.
+
 ## Usage
 
 - `wakatime-branches`

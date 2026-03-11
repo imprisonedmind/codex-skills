@@ -9,17 +9,17 @@ Use the local wrapper commands instead of calling the WakaTime CLI freehand. The
 
 ## Command map
 
-- `/Users/lukestembp/bin/wakatime-branches [extra args]`
+- `~/bin/wakatime-branches [extra args]`
   Lists branch time for the requested day or date range, optionally filtered by project name.
-- `/Users/lukestembp/bin/wakatime-ticket-time KEY-123 [extra args]`
+- `~/bin/wakatime-ticket-time KEY-123 [extra args]`
   Resolves local branches matching the Jira key, infers the WakaTime project from the repo name, and fetches branch-specific time from the summaries API using both `project` and `branches`.
 
 ## Intent mapping
 
-- Requests like `what branches did I work on today` should use `/Users/lukestembp/bin/wakatime-branches`.
-- Requests like `what branches did I work on in soteria today` should use `/Users/lukestembp/bin/wakatime-branches --project-match soteria`.
-- Requests like `how much time did I spend on SOT-829` or `fetch WakaTime for SOT-829` should use `/Users/lukestembp/bin/wakatime-ticket-time SOT-829`.
-- Requests for machine-readable ticket time should use `/Users/lukestembp/bin/wakatime-ticket-time SOT-829 --json`.
+- Requests like `what branches did I work on today` should use `~/bin/wakatime-branches`.
+- Requests like `what branches did I work on in soteria today` should use `~/bin/wakatime-branches --project-match soteria`.
+- Requests like `how much time did I spend on SOT-829` or `fetch WakaTime for SOT-829` should use `~/bin/wakatime-ticket-time SOT-829`.
+- Requests for machine-readable ticket time should use `~/bin/wakatime-ticket-time SOT-829 --json`.
 - Requests to prepare a Jira update from tracked time should use branch rows or ticket-specific branch time, then use the Jira skill or Jira wrappers to inspect the target ticket.
 
 ## Output guidance
@@ -31,10 +31,10 @@ Use the local wrapper commands instead of calling the WakaTime CLI freehand. The
 
 ## Workflow
 
-1. For branch discovery by day, run `/Users/lukestembp/bin/wakatime-branches`.
-2. For branch discovery within a project, run `/Users/lukestembp/bin/wakatime-branches --project-match soteria`.
-3. For ticket-specific time, run `/Users/lukestembp/bin/wakatime-ticket-time KEY-123`.
-4. For structured ticket time, run `/Users/lukestembp/bin/wakatime-ticket-time KEY-123 --json`.
+1. For branch discovery by day, run `~/bin/wakatime-branches`.
+2. For branch discovery within a project, run `~/bin/wakatime-branches --project-match soteria`.
+3. For ticket-specific time, run `~/bin/wakatime-ticket-time KEY-123`.
+4. For structured ticket time, run `~/bin/wakatime-ticket-time KEY-123 --json`.
 5. If the user wants the time reflected on Jira, pass the branch rows or ticket-specific branch time into the Jira workflow.
 
 ## Guardrails
@@ -47,7 +47,7 @@ Use the local wrapper commands instead of calling the WakaTime CLI freehand. The
 
 ## Useful raw commands
 
-- `/Users/lukestembp/bin/wakatime-branches`
-- `/Users/lukestembp/bin/wakatime-branches --project-match soteria`
-- `/Users/lukestembp/bin/wakatime-ticket-time SOT-829`
-- `/Users/lukestembp/bin/wakatime-ticket-time SOT-829 --json`
+- `~/bin/wakatime-branches`
+- `~/bin/wakatime-branches --project-match soteria`
+- `~/bin/wakatime-ticket-time SOT-829`
+- `~/bin/wakatime-ticket-time SOT-829 --json`

@@ -31,39 +31,44 @@ bun run install:links
 
 ## Symlink setup
 
-Codex reads skills from `~/.codex/skills`, and the shell entrypoints live in `~/bin`.
+`bun run install:links` is the primary setup path.
 
-Create the skill symlinks:
-
-```bash
-mkdir -p ~/.codex/skills
-ln -sfn ~/Workspaces/tools/codex-skills/skills/jira-acli ~/.codex/skills/jira-acli
-ln -sfn ~/Workspaces/tools/codex-skills/skills/wakatime-cli ~/.codex/skills/wakatime-cli
-```
-
-Create the wrapper symlinks:
+Default targets:
 
 ```bash
-mkdir -p ~/bin
-ln -sfn ~/Workspaces/tools/codex-skills/skills/jira-acli/bin/acli-codex ~/bin/acli-codex
-ln -sfn ~/Workspaces/tools/codex-skills/skills/jira-acli/bin/jira-ticket ~/bin/jira-ticket
-ln -sfn ~/Workspaces/tools/codex-skills/skills/jira-acli/bin/jira-search ~/bin/jira-search
-ln -sfn ~/Workspaces/tools/codex-skills/skills/jira-acli/bin/jira-auth-refresh ~/bin/jira-auth-refresh
-ln -sfn ~/Workspaces/tools/codex-skills/skills/wakatime-cli/bin/wakatime-branches ~/bin/wakatime-branches
-ln -sfn ~/Workspaces/tools/codex-skills/skills/wakatime-cli/bin/wakatime-ticket-time ~/bin/wakatime-ticket-time
-ln -sfn ~/Workspaces/tools/codex-skills/skills/wakatime-cli/bin/wakatime-codex ~/bin/wakatime-codex
-ln -sfn ~/Workspaces/tools/codex-skills/skills/wakatime-cli/bin/wakatime-today ~/bin/wakatime-today
-ln -sfn ~/Workspaces/tools/codex-skills/skills/wakatime-cli/bin/wakatime-status ~/bin/wakatime-status
+~/.codex/skills
+~/bin
 ```
 
-Make sure `~/bin` is on your `PATH`.
+Run:
+
+```bash
+bun run install:links
+```
+
+Optional environment overrides:
+
+```bash
+export CODEX_HOME="$HOME/.codex"
+export CODEX_BIN_DIR="$HOME/bin"
+export CODEX_SKILLS_WORKSPACES_ROOT="$HOME/Workspaces"
+```
+
+- `CODEX_HOME`
+  Controls where skill symlinks are created. Default: `~/.codex`
+- `CODEX_BIN_DIR`
+  Controls where wrapper symlinks are created. Default: `~/bin`
+- `CODEX_SKILLS_WORKSPACES_ROOT`
+  Controls the default workspace root used by branch-discovery tooling. Default: `~/Workspaces`
+
+Make sure `CODEX_BIN_DIR` is on your `PATH`.
 
 ## Current live paths
 
-- `~/.codex/skills/jira-acli` -> `skills/jira-acli`
-- `~/.codex/skills/wakatime-cli` -> `skills/wakatime-cli`
-- `~/bin/jira-*` -> `skills/jira-acli/bin/*`
-- `~/bin/wakatime-*` -> `skills/wakatime-cli/bin/*`
+- `$CODEX_HOME/skills/jira-acli` -> `skills/jira-acli`
+- `$CODEX_HOME/skills/wakatime-cli` -> `skills/wakatime-cli`
+- `$CODEX_BIN_DIR/jira-*` -> `skills/jira-acli/bin/*`
+- `$CODEX_BIN_DIR/wakatime-*` -> `skills/wakatime-cli/bin/*`
 
 ## Combined example
 

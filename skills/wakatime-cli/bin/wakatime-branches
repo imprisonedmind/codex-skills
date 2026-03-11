@@ -4,6 +4,7 @@ import base64
 import configparser
 import json
 import os
+from os.path import expanduser
 import sys
 import urllib.parse
 import urllib.request
@@ -31,7 +32,7 @@ def parse_args() -> argparse.Namespace:
 
 def read_api_key() -> str:
     cfg = configparser.ConfigParser()
-    cfg.read("/Users/lukestembp/.wakatime.cfg")
+    cfg.read(os.environ.get("WAKATIME_CONFIG", expanduser("~/.wakatime.cfg")))
     key = cfg.get("settings", "api_key", fallback="").strip()
     if not key:
         raise SystemExit("WakaTime api_key is not configured in ~/.wakatime.cfg")
@@ -93,7 +94,9 @@ def main() -> None:
     filters = [value.lower() for value in args.project_match]
 
     projects = project_names(api_key, args.start, end)
-    local_projects = local_project_names(Path("/Users/lukestembp/Workspaces"))
+    local_projects = local_project_names(
+        Path(os.environ.get("CODEX_SKILLS_WORKSPACES_ROOT", expanduser("~/Workspaces")))
+    )
     projects = [project for project in projects if project in local_projects]
     if filters:
         projects = [
