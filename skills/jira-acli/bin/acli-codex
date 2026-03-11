@@ -1,0 +1,39 @@
+#!/bin/zsh
+set -euo pipefail
+
+export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:$PATH"
+
+ACLI_BIN="/opt/homebrew/bin/acli"
+PRIVATE_ENV="${HOME}/.zsh_private"
+
+if [[ -r "${PRIVATE_ENV}" ]]; then
+  source "${PRIVATE_ENV}" >/dev/null 2>&1 || true
+fi
+
+needs_auth_check=true
+if [[ "${1:-}" == "jira" && "${2:-}" == "auth" ]]; then
+  needs_auth_check=false
+fi
+
+for arg in "$@"; do
+  if [[ "${arg}" == "--help" || "${arg}" == "-h" ]]; then
+    needs_auth_check=false
+    break
+  fi
+done
+
+if [[ "${needs_auth_check}" == true ]]; then
+  if ! "${ACLI_BIN}" jira auth status >/dev/null 2>&1; then
+    if whence -w jira-login >/dev/null 2>&1; then
+      if ! jira-login >/dev/null; then
+        echo "Jira authentication failed via jira-login from ~/.zsh_private" >&2
+        exit 1
+      fi
+    else
+      echo "jira-login is not available from ~/.zsh_private" >&2
+      exit 1
+    fi
+  fi
+fi
+
+exec "${ACLI_BIN}" "$@"
