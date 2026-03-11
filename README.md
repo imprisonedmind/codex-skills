@@ -85,10 +85,7 @@ For today, March 11, 2026, Jira shows two tickets you worked on:
 Matched against WakaTime branch time in soteria-django for March 11, 2026:
 
 - SOT-829 -> branch sot-829-browser-map-toggle -> 1 hr 4 mins
-- SOT-820 -> branch SOT-820-event-comments -> 1 min
-
-There was also 54 mins on branch main in soteria-django today, which does not
-map cleanly to a Jira key.
+- SOT-820 -> branch SOT-820-event-comments -> 15 min
 ```
 
 This is the main intended workflow for these skills: use Jira to identify the
