@@ -14,9 +14,15 @@
     },
     "packages/jira-acli": {
       "name": "@codex-skills/jira-acli",
+      "dependencies": {
+        "@codex-skills/core": "workspace:*",
+      },
     },
     "packages/wakatime-cli": {
       "name": "@codex-skills/wakatime-cli",
+      "dependencies": {
+        "@codex-skills/core": "workspace:*",
+      },
     },
   },
   "packages": {

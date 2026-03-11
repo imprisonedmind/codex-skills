@@ -1,14 +1,15 @@
 # jira-acli
 
-Codex skill and local wrappers for Jira access through `acli`.
+Codex skill docs for Jira access through the Bun-backed `acli` wrappers.
 
 ## Contents
 
 - `SKILL.md`: Codex skill instructions
-- `bin/acli-codex`: stable `acli` wrapper
-- `bin/jira-ticket`: view a Jira ticket
-- `bin/jira-search`: run a JQL search
-- `bin/jira-auth-refresh`: refresh Jira auth with the browser flow
+- live command entrypoints:
+- `packages/jira-acli/src/cli/acli-codex.ts`
+- `packages/jira-acli/src/cli/jira-ticket.ts`
+- `packages/jira-acli/src/cli/jira-search.ts`
+- `packages/jira-acli/src/cli/jira-auth-refresh.ts`
 
 ## Setup
 
@@ -37,7 +38,7 @@ jira-login() {
 }
 ```
 
-`bin/acli-codex` sources `~/.zsh_private`, checks `acli jira auth status`, and calls `jira-login` when needed.
+`~/bin/acli-codex` points at the Bun entrypoint in `packages/jira-acli/src/cli/acli-codex.ts`. That command loads `~/.zsh_private`, checks `acli jira auth status`, and calls `jira-login` when needed.
 
 ## Usage
 
@@ -48,4 +49,4 @@ jira-login() {
 ## Notes
 
 - Do not commit Atlassian credentials.
-- The repo only contains wrappers and skill instructions; auth stays in shell-private files.
+- Auth stays in shell-private files outside this repo.

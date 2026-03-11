@@ -1,1 +1,0 @@
-{"root":["./src/index.ts","./src/config/paths.ts","./src/errors/app-error.ts","./src/exec/run-command.ts","./src/fs/ensure-dir.ts","./src/fs/ensure-symlink.ts","./src/git/find-git-repos.ts","./src/http/fetch-json.ts","./src/output/print-json.ts"],"version":"5.9.3"}

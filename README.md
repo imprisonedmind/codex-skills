@@ -5,16 +5,15 @@ Custom Codex skills and local helper wrappers.
 ## Layout
 
 - `skills/` contains one self-contained folder per skill.
-- each skill folder contains its own:
-  - `SKILL.md`
-  - `README.md`
-  - `bin/` wrappers
+- each skill folder contains `SKILL.md` and `README.md`.
 - `packages/` contains the Bun/TypeScript rewrite workspace.
+- `packages/jira-acli` contains the live Jira command entrypoints.
+- `packages/wakatime-cli` contains the live WakaTime command entrypoints.
 - `scripts/` contains repo-level utility scripts such as symlink installation.
 
 ## Bun workspace
 
-The TypeScript rewrite is being built as a Bun workspace.
+The live command layer runs as a Bun workspace.
 
 Setup:
 
@@ -67,8 +66,15 @@ Make sure `CODEX_BIN_DIR` is on your `PATH`.
 
 - `$CODEX_HOME/skills/jira-acli` -> `skills/jira-acli`
 - `$CODEX_HOME/skills/wakatime-cli` -> `skills/wakatime-cli`
-- `$CODEX_BIN_DIR/jira-*` -> `skills/jira-acli/bin/*`
-- `$CODEX_BIN_DIR/wakatime-*` -> `skills/wakatime-cli/bin/*`
+- `$CODEX_BIN_DIR/acli-codex` -> `packages/jira-acli/src/cli/acli-codex.ts`
+- `$CODEX_BIN_DIR/jira-auth-refresh` -> `packages/jira-acli/src/cli/jira-auth-refresh.ts`
+- `$CODEX_BIN_DIR/jira-search` -> `packages/jira-acli/src/cli/jira-search.ts`
+- `$CODEX_BIN_DIR/jira-ticket` -> `packages/jira-acli/src/cli/jira-ticket.ts`
+- `$CODEX_BIN_DIR/wakatime-branches` -> `packages/wakatime-cli/src/cli/wakatime-branches.ts`
+- `$CODEX_BIN_DIR/wakatime-codex` -> `packages/wakatime-cli/src/cli/wakatime-codex.ts`
+- `$CODEX_BIN_DIR/wakatime-status` -> `packages/wakatime-cli/src/cli/wakatime-status.ts`
+- `$CODEX_BIN_DIR/wakatime-ticket-time` -> `packages/wakatime-cli/src/cli/wakatime-ticket-time.ts`
+- `$CODEX_BIN_DIR/wakatime-today` -> `packages/wakatime-cli/src/cli/wakatime-today.ts`
 
 ## Combined example
 
@@ -100,4 +106,5 @@ context back into Codex for Jira updates.
 ## Notes
 
 - Secrets stay outside this repo in files like `~/.zsh_private` and `~/.wakatime.cfg`.
-- Wrapper scripts in this repo may read those external files, but must not contain secrets.
+- The live commands are Bun/TypeScript entrypoints under `packages/`.
+- Skill folders contain docs and Codex instructions only.

@@ -1,1 +1,1 @@
-export const wakatimeCliRewritePlanned = true;
+export * from "./lib/wakatime-runtime";

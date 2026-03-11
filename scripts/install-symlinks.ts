@@ -19,7 +19,7 @@ const binLinks = [
   "jira-search",
   "jira-ticket",
 ].map((name) => ({
-  source: join(repoRoot, "skills", "jira-acli", "bin", name),
+  source: join(repoRoot, "packages", "jira-acli", "src", "cli", `${name}.ts`),
   target: join(codexBinDir(), name),
 })).concat([
   "wakatime-branches",
@@ -28,7 +28,7 @@ const binLinks = [
   "wakatime-ticket-time",
   "wakatime-today",
 ].map((name) => ({
-  source: join(repoRoot, "skills", "wakatime-cli", "bin", name),
+  source: join(repoRoot, "packages", "wakatime-cli", "src", "cli", `${name}.ts`),
   target: join(codexBinDir(), name),
 })));
 

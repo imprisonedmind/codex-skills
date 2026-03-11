@@ -1,12 +1,16 @@
 # wakatime-cli
 
-Codex skill and local wrappers for WakaTime branch-time lookups.
+Codex skill docs for Bun-backed WakaTime branch-time lookups.
 
 ## Contents
 
 - `SKILL.md`: Codex skill instructions
-- `bin/wakatime-branches`: branch rows for a day or date range
-- `bin/wakatime-ticket-time`: Jira-key-driven branch time lookup
+- live command entrypoints:
+- `packages/wakatime-cli/src/cli/wakatime-branches.ts`
+- `packages/wakatime-cli/src/cli/wakatime-ticket-time.ts`
+- `packages/wakatime-cli/src/cli/wakatime-status.ts`
+- `packages/wakatime-cli/src/cli/wakatime-today.ts`
+- `packages/wakatime-cli/src/cli/wakatime-codex.ts`
 
 ## Setup
 
@@ -61,3 +65,4 @@ Environment overrides:
 - This skill is intentionally branch-focused.
 - `wakatime-branches` is the default answer for prompts like `what branches did I work on today` or `what branches did I work on in soteria today`.
 - `wakatime-ticket-time` is the default answer for prompts like `how much time did I spend on SOT-829`.
+- `~/bin/wakatime-*` symlinks point at the Bun entrypoints under `packages/wakatime-cli/src/cli/`.

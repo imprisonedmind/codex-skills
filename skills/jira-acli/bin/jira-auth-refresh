@@ -1,6 +1,0 @@
-#!/bin/zsh
-set -euo pipefail
-
-export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:$PATH"
-
-exec /opt/homebrew/bin/acli jira auth login --web "$@"
